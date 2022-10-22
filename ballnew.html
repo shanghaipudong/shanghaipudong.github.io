@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ball</title>
+
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+
+      body {
+        background-color: aliceblue;
+      }
+
+      .ball {
+        border-radius: 50%;
+        position: absolute;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      function Ball(x, y) {
+        this.x = x;
+        this.y = y;
+        this.r = 15;
+        this.color = colorArr[Math.floor(Math.random() * colorArr.length)]; //0-7
+        this.opacity = 1;
+        this.init();
+        ballArr.push(this);
+        do {
+          this.dx = Math.floor(Math.random() * (10 + 10 + 1)) - 10; //-10   10;
+          this.dy = Math.floor(Math.random() * (10 + 10 + 1)) - 10; //-10   10;
+        } while (this.dx == 0 && this.dy == 0);
+      }
+
+      Ball.prototype.init = function () {
+        this.dom = document.createElement("div");
+        this.dom.className = "ball";
+        this.dom.style.width = 2 * this.r + "px";
+        this.dom.style.height = 2 * this.r + "px";
+        this.dom.style.left = this.x - this.r + "px";
+        this.dom.style.top = this.y - this.r + "px";
+        this.dom.style.backgroundColor = this.color;
+        this.dom.style.opacity = this.opacity;
+
+        document.body.appendChild(this.dom);
+      };
+
+      Ball.prototype.update = function () {
+        this.x += this.dx;
+        this.y -= this.dy;
+        this.r += 0.4;
+        this.opacity -= 0.02;
+        this.dom.style.width = 2 * this.r + "px";
+        this.dom.style.height = 2 * this.r + "px";
+        this.dom.style.left = this.x - this.r + "px";
+        this.dom.style.top = this.y - this.r + "px";
+        this.dom.style.opacity = this.opacity;
+
+        if (this.opacity < 0) {
+          for (var i = 0; i < ballArr.length; i++) {
+            if (ballArr[i] == this) {
+              ballArr.splice(i, 1);
+            }
+          }
+          document.body.removeChild(this.dom);
+        }
+      };
+      var colorArr = [
+        "red",
+        "orange",
+        "yellow",
+        "green",
+        "blue",
+        "blueviolet",
+        "pink",
+      ];
+      var ballArr = [];
+      setInterval(function () {
+        for (var i = 0; i < ballArr.length; i++) {
+          ballArr[i].update();
+        }
+      }, 20);
+
+      document.onmousemove = function (e) {
+        var x = e.clientX;
+        var y = e.clientY;
+        new Ball(x, y);
+      };
+      /* document.addEventListener("mousemove", function (e) {
+        var x = e.clientX;
+        var y = e.clientY;
+        new Ball(x, y);
+      }, false); */
+    </script>
+  </body>
+</html>
