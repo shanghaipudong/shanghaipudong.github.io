@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>闵行区党校宣传片</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 配置Tailwind自定义样式 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        dark: '#1D2129',
+                        light: '#F2F3F5'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .video-container {
+                @apply relative w-full overflow-hidden rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl;
+                padding-top: 56.25%; /* 16:9 视频比例 */
+            }
+            .video-wrapper {
+                @apply absolute top-0 left-0 w-full h-full;
+            }
+            .mobile-padding {
+                @apply px-4;
+            }
+            .content-shift {
+                @apply pt-16 md:pt-24;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-dark">
+    <!-- 页面容器 -->
+    <div class="container mx-auto mobile-padding content-shift max-w-6xl">
+        <!-- 页面标题区域 -->
+        <header class="mb-8 md:mb-12 text-center">
+            <h1 class="text-[clamp(1.5rem,5vw,3rem)] font-bold text-dark leading-tight tracking-tight">
+                闵行区党校宣传片
+            </h1>
+        </header>
+        
+        <!-- 视频内容区域 -->
+        <main class="bg-white rounded-2xl p-4 md:p-8 shadow-md">
+            <div class="video-container">
+                <!-- 视频标签保持不变 -->
+                <video class="video-wrapper" 
+                       title="闵行区党校宣传片" 
+                       controls
+                       autoplay
+                       loop
+                       preload="auto">
+                       <source src="minhang.mp4" type="video/mp4">
+                    您的浏览器不支持HTML5视频播放，请升级浏览器
+                </video>
+            </div>
+        </main>
+    </div>
+
+    <!-- 交互脚本保持不变 -->
+    <script>
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 视频容器悬停效果
+            const videoContainer = document.querySelector('.video-container');
+            if (videoContainer) {
+                videoContainer.addEventListener('mouseenter', () => {
+                    videoContainer.style.transform = 'scale(1.01)';
+                });
+                videoContainer.addEventListener('mouseleave', () => {
+                    videoContainer.style.transform = 'scale(1)';
+                });
+            }
+
+            // 视频加载错误处理
+            const video = document.querySelector('video');
+            if (video) {
+                video.addEventListener('error', () => {
+                    console.log('视频加载错误');
+                    // 可以在这里添加错误提示显示逻辑
+                });
+                
+                // 尝试在用户交互后播放视频（处理浏览器自动播放限制）
+                document.addEventListener('click', () => {
+                    if (video.paused) {
+                        video.play().catch(error => {
+                            console.log('用户交互后播放仍失败:', error);
+                        });
+                    }
+                }, { once: true });
+                
+                // 尝试自动播放有声视频
+                video.play().then(() => {
+                    console.log('视频已自动播放（有声）');
+                }).catch(error => {
+                    console.log('自动播放有声视频失败:', error);
+                    console.log('大多数浏览器只允许静音自动播放，请尝试与页面交互后播放');
+                    
+                    // 自动播放失败时显示提示
+                    const提示元素 = document.createElement('div');
+                    提示元素.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-dark text-white px-4 py-2 rounded shadow-lg z-50';
+                    提示元素.textContent = '请点击页面以播放有声视频';
+                    document.body.appendChild(提示元素);
+                    
+                    // 3秒后隐藏提示
+                    setTimeout(() => {
+                        提示元素.style.opacity = '0';
+                        提示元素.style.transition = 'opacity 0.5s';
+                        setTimeout(() => 提示元素.remove(), 500);
+                    }, 3000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>    
